@@ -1,0 +1,124 @@
+<%  layout("/layouts/boilerplate") %>  
+<body>
+    <div class="row">
+
+      <div class="col-6 offset-3 mt-3 mb-3">
+        <h3 class="card-title">  <%= listing.title %>  </h3>
+      </div>
+
+      <div class="card col-6 offset-3 show-card listing-card">
+        <% if (listing.image && listing.image.url) { %>
+          <img src="<%= listing.image.url %>" class="card-img-top" alt="listing " style="height: 20rem">
+        <% } else { %>
+          <img src="https://images.pexels.com/photos/31300999/pexels-photo-31300999/free-photo-of-serene-glencoe-valley-in-early-spring.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" class="card-img-top" alt="default " style="height: 20rem">
+        <% } %>
+
+        <div class="card-body">
+          <p class="card-text">Owned by <i><%= listing.owner.username %></i></p>
+          <p class="card-text"><%= listing.description %></p>
+          <p class="card-text"> &#8377;<%= listing.price.toLocaleString("en-IN") %>/night</p>
+          <p class="card-text"><%= listing.location %></p>
+          <p class="card-text"><%= listing.country %> </p>
+        </div>
+       
+      </div>
+     
+     <br>
+
+      <% if(currentUser && currentUser._id.equals(listing.owner._id)) { %>
+        <div class="btns  offset-1 mb-3">
+          <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark   offset-2 add-btn"> Edit   </a>
+          <br><br>
+
+          <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE" novalidate class="needs-validation" >
+            <button class="btn btn-dark  offset-4 add-btn">Delete</button>
+          </form>
+        </div>
+       <% } %> 
+
+      
+      <div class="col-6 offset-3 mt-3 mb-3">
+        <hr>
+        <% if(currentUser) { %>
+        <h4 class="card-title"> Reviews </h4>
+        <form action="/listings/<%=listing._id%>/reviews" method="POST" novalidate class="needs-validation">
+           <div class="mb-3 mt-3">
+            <label for="rating" class="form-label">Rate the Listing</label>
+            <fieldset class="starability-slot">
+             <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+             <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+             <label for="first-rate1" title="Terrible">1 star</label>
+             <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+             <label for="first-rate2" title="Not good">2 stars</label>
+             <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+             <label for="first-rate3" title="Average">3 stars</label>
+             <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+             <label for="first-rate4" title="Very good">4 stars</label>
+             <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+             <label for="first-rate5" title="Amazing">5 stars</label>
+            </fieldset>
+           </div>
+
+           <div class="mb-3">
+            <label for="comment" class="form-label">Write a Review</label>
+            <textarea class="form-control" id="comment" name="review[comment]" rows="3"></textarea>
+            <div class="invalid-feedback">Please provide a review comment. </div>
+           </div>
+
+            <button type="submit" class="btn btn-outline-dark">Submit Review</button>
+        </form>
+        <% } %>
+        <hr>
+        
+        
+        <% if(listing.reviews.length > 0) { %>
+        <div class="row">
+            <p><b>All Reviews</b></p>
+            <% for(review of listing.reviews) { %>
+              <div class="card col-5 ms-3 mb-3">
+                <div class="card-body">
+                  <h5 class="card-title">@<%= review.author.username %></h5>
+                  <p class="starability-result card-text" data-rating="<%= review.rating %>"> </p>
+                  <p class="card-text"><%= review.comment %></p>
+                  <% if(currentUser && currentUser._id.equals(review.author._id)) { %>
+                  <% } %>
+                  <form class="mb-3"method="POST"action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE">
+                   <button class="btn btn-sm btn-dark">Delete</button>
+                  </form>                
+                 </div>
+              </div>
+            <% } %>
+        </div>
+        <% } %>   
+      </div>
+      <div class="col-6 offset-3 mt-3 mb-3">
+        <h3>Where you'll be</h3>
+        <div id="map" style="height: 400px;"></div>
+        <script>
+         const API_KEY = "17800302267946758f1186afbce27c47";
+         const place = "<%= listing.location %>";
+
+         // Forward Geocoding
+         fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(place)}&key=${API_KEY}`)
+         .then(res => res.json())
+         .then(data => {
+           if (data.results.length > 0) {
+           const { lat, lng } = data.results[0].geometry;
+      
+         // Initialize map
+         const map = L.map('map').setView([lat, lng], 12);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+         }).addTo(map);
+      
+         // Add marker
+         L.marker([lat, lng]).addTo(map)
+          .bindPopup(`<b>${place}</b><br>Lat: ${lat}, Lng: ${lng}`)
+          .openPopup();
+           }
+          });
+       </script>
+      </div>
+    </div>
+</body>
+ 
