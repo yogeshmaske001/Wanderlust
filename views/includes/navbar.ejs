@@ -18,7 +18,7 @@
     padding: 0.5rem 3rem 0.5rem 3rem;
   }
 </style>
-<nav class="navbar navbar-expand-md bg-body-tertiary border-bottom sticky-top mb-3">
+<nav class="navbar navbar-expand-md navbar-light bg-body-tertiary border-bottom sticky-top mb-3">
     <div class="container-fluid">
       <a class="navbar-brand" href="/listings"><i class="fa-solid fa-compass"></i></a>
 
@@ -32,17 +32,18 @@
          <div class="navbar-nav">
             <a class="nav-link" href="/listings">Explore</a>
           </div>
-          <div class="navbar-nav ms-auto">
+          
+          <!-- <div class="navbar-nav ms-auto">
             <form class="d-flex" role="search">
               <input class="form-control me-2 search-inp" type="search" placeholder="Search Destination" />
               <button class="btn search-btn" type="submit"><i  class="fa-solid fa-magnifying-glass"></i>Search</button>
             </form>
-          </div>
+          </div> -->
           <div class="navbar-nav ms-auto">
-            <a class="nav-link" href="/listings/new">Add New Listing</a>
+            <a class="nav-link" href="/listings/new">Add </a>
             <% if (!currentUser) { %>
-              <a class="nav-link" href="/signup"><b>Sign Up</b></a>
-              <a class="nav-link" href="/login"><b>Log In</b></a>
+              <a class="nav-link" href="/signup"><b>SignUp</b></a>
+              <a class="nav-link" href="/login"><b>LogIn</b></a>
             <% } else { %>
               <a class="nav-link" href="/logout">Log Out</a>
             <% } %>
