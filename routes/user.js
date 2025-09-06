@@ -20,5 +20,7 @@ router
 
 // User logout route
 router.get("/logout", userController.logoutUser); // Using the controller to handle user logout
+// Home route
+router.get("/", userController.homepage); // Using the controller to render the home page
 
 module.exports = router; // Exporting the router to be used in the main application file
